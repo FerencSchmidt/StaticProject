@@ -4,9 +4,6 @@ Web/logs/
 Proxy/proxymdata/
 Proxy/letsencrypt/
 
-# Env secrets/vars
-*.env
-
 # Temporary files
 tmp/
 temp/
