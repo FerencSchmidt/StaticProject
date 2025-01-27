@@ -1,0 +1,81 @@
+version: '3.8'
+
+services:
+  loki:
+    image: grafana/loki:3.0.0
+    container_name: loki
+    volumes:
+      - ./Loki/data:/tmp
+    ports:
+      - "3100:3100"
+    environment:
+      - VIRTUAL_HOST=loki.docker.localhost
+
+  promtail:
+    image: grafana/promtail:3.0.0
+    container_name: promtail
+    volumes:
+      - ./Promtail/promtail-config.yaml:/etc/promtail/config.yml
+      - /var/log:/var/log 
+      - /var/lib/docker/containers:/var/lib/docker/containers
+      - /run/docker.sock:/var/run/docker.sock
+    depends_on:
+      - loki
+    command: -config.file=/etc/promtail/config.yml
+    environment:
+      - VIRTUAL_HOST=promtail.docker.localhost
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    environment:
+      - VIRTUAL_HOST=grafana.docker.localhost
+    env_file:
+      - ./Grafana/grafana.env
+    entrypoint:
+      - sh
+      - -euc
+      - |
+        mkdir -p /etc/grafana/provisioning/datasources
+        cat <<EOF > /etc/grafana/provisioning/datasources/ds.yaml
+        apiVersion: 1
+        datasources:
+        - name: Loki
+          type: loki
+          access: proxy 
+          orgId: 1
+          url: http://loki:3100
+          basicAuth: false
+          isDefault: true
+          version: 1
+          editable: false
+        EOF
+        /run.sh
+    ports:
+      - "3000:3000"
+
+  nginx:
+    image: nginx:alpine
+    container_name: web
+    environment:
+      - VIRTUAL_HOST=web.docker.localhost
+    volumes:
+      - ./Web/content:/usr/share/nginx/html
+      - ./Web/nginx.conf:/etc/nginx/nginx.conf
+      - ./Web/logs:/var/log/nginx
+    ports:
+      - "8080:8080"
+
+  proxy:
+    image: 'jc21/nginx-proxy-manager:2.11.2'
+    container_name: proxym
+    restart: unless-stopped
+    ports:
+      - '80:80'
+      - '81:81'
+      - '443:443'
+    volumes:
+      - ./Proxy/proxymdata:/data
+      - ./Proxy/letsencrypt:/etc/letsencrypt
+    environment:
+      - VIRTUAL_HOST=proxy.docker.localhost
