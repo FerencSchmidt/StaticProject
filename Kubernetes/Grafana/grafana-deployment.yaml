@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: grafana
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: grafana
+  template:
+    metadata:
+      labels:
+        app: grafana
+    spec:
+      containers:
+      - name: grafana
+        image: grafana/grafana:latest
+        ports:
+        - containerPort: 3000
+          protocol: TCP
+        env:
+          - name: GF_AUTH_ANONYMOUS_ENABLED
+            valueFrom:
+              configMapKeyRef:
+                name: grafana-env
+                key: GF_AUTH_ANONYMOUS_ENABLED
+          - name: GF_AUTH_ANONYMOUS_ORG_ROLE
+            valueFrom:
+              configMapKeyRef:
+                name: grafana-env
+                key: GF_AUTH_ANONYMOUS_ORG_ROLE
+          - name: GF_FEATURE_TOGGLES_ENABLE
+            valueFrom:
+              configMapKeyRef:
+                name: grafana-env
+                key: GF_FEATURE_TOGGLES_ENABLE
+          - name: GF_PATHS_PROVISIONING
+            valueFrom:
+              configMapKeyRef:
+                name: grafana-env
+                key: GF_PATHS_PROVISIONING
+          - name: GF_SERVER_ROOT_URL
+            valueFrom:
+              configMapKeyRef:
+                name: grafana-env
+                key: GF_SERVER_ROOT_URL
+        volumeMounts:
+        - name: datasource-volume
+          mountPath: /etc/grafana/provisioning/datasources
+          readOnly: true
+      volumes:
+      - name: datasource-volume
+        configMap:
+          name: grafana-datasource-config
+      restartPolicy: Always
