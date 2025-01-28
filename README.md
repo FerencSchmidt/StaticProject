@@ -1,4 +1,4 @@
-# Project
+# Test Project
 
 This repository features a setup for Grafana, Loki, Promtail, an NGINX static website, and an NGINX Proxy Manager. This setup is bundled using Docker Compose for ease of deployment.
 
@@ -26,7 +26,10 @@ This repository features a setup for Grafana, Loki, Promtail, an NGINX static we
 
 ## Kind cluster
 
-- **Proxy to access kind cluster in wsl from Windows**:  kubectl proxy --port 8001 --reject-paths "^/api/./pods/./attach"
+- **Proxy to access kind cluster in wsl from Windows**:  
+```
+kubectl proxy --port 8001 --reject-paths "^/api/./pods/./attach"
+```
 
 - **For OpenLENS**:
 ```
