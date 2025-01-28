@@ -22,3 +22,27 @@ This repository features a setup for Grafana, Loki, Promtail, an NGINX static we
 - **Promtail**: Responsible for tracking and forwarding logs to Loki.
 - **NGINX Static Website**: Serves static content, efficiently handling web traffic and page rendering.
 - **NGINX Proxy Manager**: Manages proxy settings for web applications including SSL configuration and redirect rules.
+
+
+## Kind cluster
+
+- **Proxy to access kind cluster in wsl from Windows**:  kubectl proxy --port 8001 --reject-paths "^/api/./pods/./attach"
+
+- **For OpenLENS**:
+```
+apiVersion: v1
+kind: Config
+clusters:
+  - name: "WSL Cluster"
+    cluster:
+      server: http://localhost:8001
+users:
+  - name: nouser
+contexts:
+  - name: "WSL Cluster"
+    context:
+      cluster: "WSL Cluster"
+      user: nouser
+current-context: "WSL Cluster"
+preferences: {}
+```
