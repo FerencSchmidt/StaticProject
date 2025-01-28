@@ -13,7 +13,13 @@ This repository features a setup for Grafana, Loki, Promtail, an NGINX static we
   - **`Web/`**: Holds the static website content served through NGINX.
   
 - **`Kubernetes/`**
-  - This section will contain Kubernetes resources and manifests. (Content to be added)
+  - **`Kind/`**: Scripts and resources for setting up and managing local Kubernetes environments using Kind; includes setup for an NGINX proxy to route requests into the Kind cluster.
+  - **`Grafana/`**: Kubernetes deployments for Grafana, including service and ingress configuration.
+  - **`Loki/`**: Kubernetes manifests for deploying Loki, configured to align with cluster logging needs.
+  - **`Promtail/`**: Kubernetes constructs like deployments and ConfigMaps, tailored to gather logs from cluster nodes and pods and feed them into Loki.
+    - **Note**: There is a test script to push a hello label to promtail, it should be visible in grafana if you add a query.
+  - **`Nginx/`**: Static site TODO
+
 
 ## Components Description
 
@@ -22,30 +28,3 @@ This repository features a setup for Grafana, Loki, Promtail, an NGINX static we
 - **Promtail**: Responsible for tracking and forwarding logs to Loki.
 - **NGINX Static Website**: Serves static content, efficiently handling web traffic and page rendering.
 - **NGINX Proxy Manager**: Manages proxy settings for web applications including SSL configuration and redirect rules.
-
-
-## Kind cluster
-
-- **Proxy to access kind cluster in wsl from Windows**:  
-```
-kubectl proxy --port 8001 --reject-paths "^/api/./pods/./attach"
-```
-
-- **For OpenLENS**:
-```
-apiVersion: v1
-kind: Config
-clusters:
-  - name: "WSL Cluster"
-    cluster:
-      server: http://localhost:8001
-users:
-  - name: nouser
-contexts:
-  - name: "WSL Cluster"
-    context:
-      cluster: "WSL Cluster"
-      user: nouser
-current-context: "WSL Cluster"
-preferences: {}
-```
