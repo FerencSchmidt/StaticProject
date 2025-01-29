@@ -1,1 +1,1 @@
-docker build -t static-site .
+docker build -t webapp .
