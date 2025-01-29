@@ -23,7 +23,7 @@ spec:
     app: foo
   ports:
   # Default port used by the image
-  - port: 8080
+  - port: 9090
 ---
 kind: Pod
 apiVersion: v1
@@ -37,7 +37,7 @@ spec:
     - /agnhost
     - serve-hostname
     - --http=true
-    - --port=8080
+    - --port=9090
     image: registry.k8s.io/e2e-test-images/agnhost:2.39
     name: bar-app
 ---
@@ -50,7 +50,7 @@ spec:
     app: bar
   ports:
   # Default port used by the image
-  - port: 8080
+  - port: 9090
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
@@ -66,12 +66,12 @@ spec:
           service:
             name: foo-service
             port:
-              number: 8080
+              number: 9090
       - pathType: Prefix
         path: /bar
         backend:
           service:
             name: bar-service
             port:
-              number: 8080
+              number: 9090
 ---

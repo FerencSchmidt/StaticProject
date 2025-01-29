@@ -27,7 +27,7 @@ This repository features a setup for Grafana, Loki, Promtail, an NGINX static we
 
 ## Components Description
 
-- **Grafana**: Provides powerful and beautiful visualizations of metrics collected from various data sources like Loki.
+- **Grafana**: Provides powerful visualizations of metrics collected from various data sources like Loki.
 - **Loki**: Designed for optimal horizontal scalability, Loki handles logs collection and aggregation.
 - **Promtail**: Responsible for tracking and forwarding logs to Loki.
 - **NGINX Static Website**: Serves static content, efficiently handling web traffic and page rendering.
