@@ -20,8 +20,9 @@ This repository features a setup for Grafana, Loki, Promtail, an NGINX static we
     - **Note**: There is a test script to push a hello label to promtail, it should be visible in grafana if you add a query.
   - **`Web/`**: Static site TODO
     - **Note**: The image for the nginx static website should be built from the Docker directory in here, and then it can be loaded to KinD: 
-    
-        ```kind load docker-image webapp:latest```
+    ```
+    kind load docker-image webapp:latest
+    ```
 
 
 ## Components Description
