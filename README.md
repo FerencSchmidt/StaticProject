@@ -18,7 +18,8 @@ This repository features a setup for Grafana, Loki, Promtail, an NGINX static we
   - **`Loki/`**: Kubernetes manifests for deploying Loki, configured to align with cluster logging needs.
   - **`Promtail/`**: Kubernetes constructs like deployments and ConfigMaps, tailored to gather logs from cluster nodes and pods and feed them into Loki.
     - **Note**: There is a test script to push a hello label to promtail, it should be visible in grafana if you add a query.
-  - **`Nginx/`**: Static site TODO
+  - **`Web/`**: Static site TODO
+    - **Note**: The image for the nginx static website should be built from the Docker directory in here, and then it can be loaded to KinD: '''kind load docker-image webapp:latest'''
 
 
 ## Components Description
