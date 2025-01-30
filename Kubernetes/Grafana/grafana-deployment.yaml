@@ -45,11 +45,21 @@ spec:
                 name: grafana-env
                 key: GF_SERVER_ROOT_URL
         volumeMounts:
-        - name: datasource-volume
+        - name: grafana-datasource-volume
           mountPath: /etc/grafana/provisioning/datasources
           readOnly: true
+        - name: grafana-dashboard-provider
+          mountPath: /etc/grafana/provisioning/dashboards/
+        - name: grafana-dashboard-volume
+          mountPath: /var/lib/grafana/dashboards/
       volumes:
-      - name: datasource-volume
+      - name: grafana-datasource-volume
         configMap:
           name: grafana-datasource-config
+      - name: grafana-dashboard-provider
+        configMap:
+          name: grafana-dashboard-provider
+      - name: grafana-dashboard-volume
+        configMap:
+          name: grafana-click-count-dashboard
       restartPolicy: Always

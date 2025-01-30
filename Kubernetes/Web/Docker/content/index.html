@@ -23,5 +23,18 @@
 <body>
     <h1>ASDASD</h1>
     <p>asdasdasd</p>
+    <button onclick="logAction()">Click to Log</button>
+
+    <script>
+    let count = 0;
+
+    function logAction() {
+        count++;
+        var xmlHttp = new XMLHttpRequest();
+        // Endpoint and log message update including the count
+        xmlHttp.open("GET", '/log?action=button_clicked&count=' + count, true);
+        xmlHttp.send();
+    }
+    </script>
 </body>
 </html>

@@ -3,16 +3,16 @@ kind: Deployment
 metadata:
   name: promtail
   labels:
-    name: promtail
+    app: promtail
 spec:
   replicas: 1
   selector:
     matchLabels:
-      name: promtail
+      app: promtail
   template:
     metadata:
       labels:
-        name: promtail
+        app: promtail
     spec:
       serviceAccountName: promtail
       containers:
@@ -20,15 +20,25 @@ spec:
         image: grafana/promtail:latest
         args:
           - -config.file=/etc/promtail/promtail.yaml
+        env:
+          - name: HOSTNAME
+            valueFrom:
+              fieldRef:
+                fieldPath: spec.nodeName
         volumeMounts:
         - name: promtail-config
           mountPath: /etc/promtail
-        - name: log-volume
-          mountPath: /var/log
+        - name: docker-containers
+          mountPath: /var/lib/docker/containers
+        - name: log-pods
+          mountPath: /var/log/pods
       volumes:
       - name: promtail-config
         configMap:
           name: promtail-config
-      - name: log-volume
+      - name: docker-containers
         hostPath:
-          path: /var/log
+          path: /var/lib/docker/containers
+      - name: log-pods
+        hostPath:
+          path: /var/log/pods

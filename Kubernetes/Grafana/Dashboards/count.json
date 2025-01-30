@@ -1,0 +1,47 @@
+{
+    "panels": [
+      {
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "palette-classic"
+            },
+            "thresholds": {
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                }
+              ]
+            }
+          }
+        },
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 0,
+          "y": 0
+        },
+        "options": {
+          "colorMode": "value",
+          "reduceOptions": {
+            "calcs": [
+              "lastNotNull"
+            ]
+          }
+        },
+        "targets": [
+          {
+            "expr": "sum by(action) (count_over_time({container=\"webapp\"} |= \"/log?action=button_clicked\" | regexp \"count=(?P<count>[0-9]+)\" [$__range]))",
+            "refId": "A"
+          }
+        ],
+        "title": "Webapp Click Count",
+        "type": "stat"
+      }
+    ],
+    "title": "Click Count Dashboard",
+    "timezone": "browser",
+    "schemaVersion": 30,
+    "refresh": "5s"
+  }

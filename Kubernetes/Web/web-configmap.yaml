@@ -7,7 +7,8 @@ data:
     user nginx;
     worker_processes auto;
 
-    error_log /var/log/nginx/error.log notice;
+    # Redirect error logs to stderr
+    error_log /dev/stderr notice;
     pid /var/run/nginx.pid;
 
     events {
@@ -15,31 +16,40 @@ data:
     }
 
     http {
-        include       /etc/nginx/mime.types;
-        default_type  application/octet-stream;
+        include /etc/nginx/mime.types;
+        default_type application/octet-stream;
 
         log_format loki '$remote_addr - $remote_user [$time_local] "$request" '
                         '$status $body_bytes_sent "$http_referer" '
-                        '"$http_user_agent" $request_time';
+                        '"$http_user_agent" $request_time "$request_uri"';  
 
-        access_log /var/log/nginx/access.log loki;
-        error_log /var/log/nginx/error.log;
+        log_format log_interaction '$remote_addr - [$time_local] "$request" $status "$http_user_agent"';
 
-        sendfile        on;
-        keepalive_timeout  65;
+        # Redirect access logs to stdout using the loki format
+        access_log /dev/stdout loki;
+
+        sendfile on;
+        keepalive_timeout 65;
 
         server {
-            listen       8080;
-            server_name  localhost;
+            listen 8080;
+            server_name localhost;
 
             location / {
-                root   /usr/share/nginx/html;
-                index  index.html index.htm;
+                root /usr/share/nginx/html;
+                index index.html index.htm;
             }
 
-            error_page  500 502 503 504  /50x.html;
+            location /log {
+                internal;
+                # Redirect the interaction log to stdout using the log_interaction format
+                access_log /dev/stdout log_interaction; 
+                return 204; # No Content response
+            }
+
+            error_page 500 502 503 504 /50x.html;
             location = /50x.html {
-                root   /usr/share/nginx/html;
+                root /usr/share/nginx/html;
             }
         }
     }

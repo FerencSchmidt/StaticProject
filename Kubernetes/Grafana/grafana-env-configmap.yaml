@@ -4,7 +4,7 @@ metadata:
   name: grafana-env
 data:
   GF_AUTH_ANONYMOUS_ENABLED: "true"
-  GF_AUTH_ANONYMOUS_ORG_ROLE: Admin
+  GF_AUTH_ANONYMOUS_ORG_ROLE: "Admin"
   GF_FEATURE_TOGGLES_ENABLE: "alertingSimplifiedRouting,alertingQueryAndExpressionsStepMode"
-  GF_PATHS_PROVISIONING: /etc/grafana/provisioning
+  GF_PATHS_PROVISIONING: "/etc/grafana/provisioning"
   GF_SERVER_ROOT_URL: "%(protocol)s://%(domain)s:%(http_port)s/grafana/"
