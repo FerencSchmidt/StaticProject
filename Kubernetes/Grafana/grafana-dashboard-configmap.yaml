@@ -2,6 +2,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: grafana-click-count-dashboard
+  namespace: monitoring
 data:
   click-count-dashboard.json: |
     {
