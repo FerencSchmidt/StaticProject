@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: jenkins-config
+  namespace: jenkins
+data:
+  jenkins.yaml: |
+    jenkins:
+      systemMessage: "Welcome to Jenkins configured via JCasC!"
+      # Define root URL for Jenkins
+      rootURL: "http://localhost/jenkins"
+      # Define Jenkins arguments
+      jenkinsArgs:
+       - "--prefix=/jenkins"

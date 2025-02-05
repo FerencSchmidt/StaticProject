@@ -1,0 +1,81 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jenkins
+  namespace: jenkins
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: jenkins
+  template:
+    metadata:
+      labels:
+        app: jenkins
+    spec:
+      initContainers:
+      - name: install-plugins
+        image: jenkins/jenkins:lts
+        command: ['sh', '-c']
+        args:
+        - |
+            jenkins-plugin-cli --plugins kubernetes:4306.vc91e951ea_eb_d git:5.5.0
+        volumeMounts:
+          - name: plugin-volume
+            mountPath: /usr/share/jenkins/ref/plugins
+      - name: generate-ssh-key
+        image: alpine
+        command: ['sh', '-c']
+        args:
+        - |
+          apk update && apk add --no-cache openssh
+          mkdir -p /var/jenkins_home/.ssh
+          
+          # Accept GitHub.com host key automatically
+          ssh-keyscan -t rsa github.com >> /var/jenkins_home/.ssh/known_hosts
+          
+          # Generate SSH keys if they don't exist
+          if [ ! -f /var/jenkins_home/.ssh/id_rsa ]; then
+            ssh-keygen -t rsa -b 4096 -m PEM -f /var/jenkins_home/.ssh/id_rsa -N ""
+          fi
+          
+          # Ensuring correct permissions and ownership
+          chmod 700 /var/jenkins_home/.ssh
+          chmod 600 /var/jenkins_home/.ssh/id_rsa
+          chmod 644 /var/jenkins_home/.ssh/id_rsa.pub
+          chmod 644 /var/jenkins_home/.ssh/known_hosts
+          chown -R 1000:1000 /var/jenkins_home/.ssh
+
+          # Printing pub key for debugging
+          cat /var/jenkins_home/.ssh/id_rsa.pub
+        volumeMounts:
+        - name: ssh-volume
+          mountPath: /var/jenkins_home/.ssh
+      containers:
+      - name: jenkins
+        image: jenkins/jenkins:lts
+        env:
+          - name: CASC_JENKINS_CONFIG
+            value: /var/jenkins_home/casc_configs/jenkins.yaml
+          - name: JENKINS_OPTS
+            value: "--prefix=/jenkins --httpListenAddress=0.0.0.0"
+        ports:
+        - containerPort: 8080
+        volumeMounts:
+        - name: jenkins-home
+          mountPath: /var/jenkins_home
+        - name: plugin-volume
+          mountPath: /usr/share/jenkins/ref/plugins
+        - name: ssh-volume
+          mountPath: /var/jenkins_home/.ssh
+          readOnly: false
+      volumes:
+      - name: plugin-volume
+        persistentVolumeClaim:
+          claimName: jenkins-plugins-pvc
+      - name: jenkins-home
+        persistentVolumeClaim:
+          claimName: jenkins-home-pvc
+      - name: ssh-volume
+        persistentVolumeClaim:
+          claimName: jenkins-ssh-pvc

@@ -1,0 +1,21 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    nginx.ingress.kubernetes.io/add-base-url: "true"
+    #nginx.ingress.kubernetes.io/rewrite-target: /$1
+  name: jenkins
+  namespace: jenkins
+spec:
+  ingressClassName: nginx
+  rules:
+   - http:
+      paths:
+      - pathType: ImplementationSpecific
+        path: /jenkins
+        backend:
+          service:
+            name: jenkins-service
+            port:
+              number: 8080
