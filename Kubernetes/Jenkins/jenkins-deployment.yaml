@@ -13,13 +13,17 @@ spec:
       labels:
         app: jenkins
     spec:
+      serviceAccountName: jenkins-sa
       initContainers:
       - name: install-plugins
         image: jenkins/jenkins:lts
         command: ['sh', '-c']
         args:
         - |
-            jenkins-plugin-cli --plugins kubernetes:4306.vc91e951ea_eb_d git:5.5.0
+            jenkins-plugin-cli --plugins \
+            kubernetes:4306.vc91e951ea_eb_d \
+            git:5.5.0 \
+            configuration-as-code:1932.v75cb_b_f1b_698d
         volumeMounts:
           - name: plugin-volume
             mountPath: /usr/share/jenkins/ref/plugins
@@ -61,6 +65,7 @@ spec:
             value: "--prefix=/jenkins --httpListenAddress=0.0.0.0"
         ports:
         - containerPort: 8080
+        - containerPort: 50000
         volumeMounts:
         - name: jenkins-home
           mountPath: /var/jenkins_home
@@ -69,6 +74,8 @@ spec:
         - name: ssh-volume
           mountPath: /var/jenkins_home/.ssh
           readOnly: false
+        - name: casc-config
+          mountPath: /var/jenkins_home/casc_configs
       volumes:
       - name: plugin-volume
         persistentVolumeClaim:
@@ -79,3 +86,6 @@ spec:
       - name: ssh-volume
         persistentVolumeClaim:
           claimName: jenkins-ssh-pvc
+      - name: casc-config
+        configMap:
+          name: jenkins-config

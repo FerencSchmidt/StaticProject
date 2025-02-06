@@ -8,7 +8,35 @@ data:
     jenkins:
       systemMessage: "Welcome to Jenkins configured via JCasC!"
       # Define root URL for Jenkins
-      rootURL: "http://localhost/jenkins"
+      rootURL: "http://jenkins-service.jenkins.svc.cluster.local:8080"
       # Define Jenkins arguments
       jenkinsArgs:
        - "--prefix=/jenkins"
+      clouds:
+        - kubernetes:
+            name: "kubernetes"
+            serverUrl: "https://kubernetes.default.svc"
+            namespace: "jenkins"
+            jenkinsUrl: "http://jenkins-service.jenkins.svc.cluster.local:8080/jenkins"
+            jenkinsTunnel: "jenkins-agent.jenkins.svc.cluster.local:50000"
+            templates:
+              - name: "default-agent"
+                label: "kubeagent"
+                namespace: "jenkins"
+                idleMinutes: 10
+                containers:
+                  - name: "jnlp"
+                    image: "jenkins/inbound-agent:4.3-4"
+                    workingDir: "/home/jenkins/agent"
+                    volumes:
+                      - hostPathVolume:
+                          hostPath: "/var/jenkins_home/.ssh"
+                          mountPath: "/home/jenkins/.ssh"
+                      - configMapVolume:
+                          name: "ssh-known-hosts"
+                          mountPath: "/home/jenkins/.ssh/known_hosts"
+                          subPath: "known_hosts"
+                      - secretVolume:
+                          secretName: "jenkins-ssh-pvc"
+                          mountPath: "/home/jenkins/.ssh/id_rsa"
+                          subPath: "id_rsa"

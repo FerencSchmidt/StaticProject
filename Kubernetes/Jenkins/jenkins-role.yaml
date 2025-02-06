@@ -5,8 +5,19 @@ metadata:
   name: jenkins-role
 rules:
 - apiGroups: [""]
-  resources: ["secrets"]
+  resources: ["secrets", "pods", "pods/log"]
   verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+- apiGroups: [""]
+  resources: ["configmaps"]
+  verbs: ["get", "create", "update"]
+
+---
+
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: jenkins-sa
+  namespace: jenkins
 
 ---
 
@@ -17,7 +28,7 @@ metadata:
   namespace: jenkins
 subjects:
 - kind: ServiceAccount
-  name: default
+  name: jenkins-sa
   namespace: jenkins
 roleRef:
   kind: Role
