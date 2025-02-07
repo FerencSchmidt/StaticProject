@@ -27,34 +27,6 @@ spec:
         volumeMounts:
           - name: plugin-volume
             mountPath: /usr/share/jenkins/ref/plugins
-      - name: generate-ssh-key
-        image: alpine
-        command: ['sh', '-c']
-        args:
-        - |
-          apk update && apk add --no-cache openssh
-          mkdir -p /var/jenkins_home/.ssh
-          
-          # Accept GitHub.com host key automatically
-          ssh-keyscan -t rsa github.com >> /var/jenkins_home/.ssh/known_hosts
-          
-          # Generate SSH keys if they don't exist
-          if [ ! -f /var/jenkins_home/.ssh/id_rsa ]; then
-            ssh-keygen -t rsa -b 4096 -m PEM -f /var/jenkins_home/.ssh/id_rsa -N ""
-          fi
-          
-          # Ensuring correct permissions and ownership
-          chmod 700 /var/jenkins_home/.ssh
-          chmod 600 /var/jenkins_home/.ssh/id_rsa
-          chmod 644 /var/jenkins_home/.ssh/id_rsa.pub
-          chmod 644 /var/jenkins_home/.ssh/known_hosts
-          chown -R 1000:1000 /var/jenkins_home/.ssh
-
-          # Printing pub key for debugging
-          cat /var/jenkins_home/.ssh/id_rsa.pub
-        volumeMounts:
-        - name: ssh-volume
-          mountPath: /var/jenkins_home/.ssh
       containers:
       - name: jenkins
         image: jenkins/jenkins:lts
@@ -71,9 +43,9 @@ spec:
           mountPath: /var/jenkins_home
         - name: plugin-volume
           mountPath: /usr/share/jenkins/ref/plugins
-        - name: ssh-volume
+        - name: ssh-keys
           mountPath: /var/jenkins_home/.ssh
-          readOnly: false
+          readOnly: true
         - name: casc-config
           mountPath: /var/jenkins_home/casc_configs
       volumes:
@@ -83,9 +55,9 @@ spec:
       - name: jenkins-home
         persistentVolumeClaim:
           claimName: jenkins-home-pvc
-      - name: ssh-volume
-        persistentVolumeClaim:
-          claimName: jenkins-ssh-pvc
+      - name: ssh-keys
+        secret:
+          secretName: jenkins-ssh-keys
       - name: casc-config
         configMap:
           name: jenkins-config
