@@ -1,2 +1,2 @@
 # Ignore SSH keys directory
-/Jenkins/ssh-gen/keys/
+/Jenkins/secrets/keys/

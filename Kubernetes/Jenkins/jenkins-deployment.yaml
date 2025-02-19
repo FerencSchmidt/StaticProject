@@ -22,7 +22,9 @@ spec:
         - |
             jenkins-plugin-cli --plugins \
             kubernetes:4306.vc91e951ea_eb_d \
-            git:5.5.0 \
+            kubernetes-cli:1.12.1 \
+            kubernetes-credentials-provider:1.273.v15e69b_55ea_8e \
+            git:5.7.0 \
             configuration-as-code:1932.v75cb_b_f1b_698d
         volumeMounts:
           - name: plugin-volume

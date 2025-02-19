@@ -14,15 +14,20 @@ data:
             jenkinsUrl: "http://jenkins-service.jenkins.svc.cluster.local:8080/jenkins"
             jenkinsTunnel: "jenkins-service.jenkins.svc.cluster.local:50000"
             templates:
-              - name: "default-agent"
+              - name: "Kubernetes-agent-template"
                 label: "kubeagent"
                 namespace: "jenkins"
+                serviceAccount: "jenkins-sa"
                 idleMinutes: 10
+                containers:
+                  - name: "jnlp"
+                    image: "docker.io/library/jenkins-kubectl-agent"
+                    workingDir: "/home/jenkins/agent"
                 volumes:
                 - secretVolume:
                     mountPath: "/home/jenkins/.ssh"
                     optional: false
-                    secretName: "ssh-key-secret"
+                    secretName: "jenkins-ssh-keys"
 
     unclassified:
       location:

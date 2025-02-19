@@ -1,0 +1,1 @@
+kubectl create configmap jenkins-jobs --from-file=./library/ -n jenkins
