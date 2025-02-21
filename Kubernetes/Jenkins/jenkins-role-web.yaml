@@ -1,0 +1,27 @@
+# Role defined for secrets, pods management in "web" namespace
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  namespace: web
+  name: jenkins-role-web
+rules:
+- apiGroups: [""]
+  resources: ["secrets", "pods", "pods/log"]
+  verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+
+---
+
+# RoleBinding in "web" namespace for web resources
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: jenkins-rolebinding-web
+  namespace: web
+subjects:
+- kind: ServiceAccount
+  name: jenkins-sa
+  namespace: jenkins
+roleRef:
+  kind: Role
+  name: jenkins-role-web
+  apiGroup: rbac.authorization.k8s.io

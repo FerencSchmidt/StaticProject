@@ -20,6 +20,7 @@ spec:
         command: ['sh', '-c']
         args:
         - |
+            echo "Installing plugins"
             jenkins-plugin-cli --plugins \
             kubernetes:4306.vc91e951ea_eb_d \
             kubernetes-cli:1.12.1 \
@@ -29,6 +30,29 @@ spec:
         volumeMounts:
           - name: plugin-volume
             mountPath: /usr/share/jenkins/ref/plugins
+      - name: job-configurator
+        image: busybox
+        command: ['sh', '-c']
+        args:
+        - |
+            echo "Configuring jobs."
+            echo "JENKINS_HOME = $JENKINS_HOME"
+            mkdir -p /var/jenkins_home/jobs;
+            for job_file in /config/*.xml; do
+              job_name=$(basename "$job_file" .xml);
+              mkdir -p "/var/jenkins_home/jobs/$job_name";
+              cp "$job_file" "/var/jenkins_home/jobs/$job_name/config.xml";
+              echo "Added $job_file to /var/jenkins_home/jobs/$job_name/config.xml."
+            done
+            echo "Setting permissions for jobs dir."
+            chown -R 1000:1000 /var/jenkins_home/jobs;
+            ls -lah /var/jenkins_home
+            ls -lah /var/jenkins_home/jobs
+        volumeMounts:
+        - name: job-config
+          mountPath: /config
+        - name: jenkins-home
+          mountPath: /var/jenkins_home
       containers:
       - name: jenkins
         image: jenkins/jenkins:lts
@@ -63,3 +87,6 @@ spec:
       - name: casc-config
         configMap:
           name: jenkins-config
+      - name: job-config
+        configMap:
+          name: jenkins-jobs
