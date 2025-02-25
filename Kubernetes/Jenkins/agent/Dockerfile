@@ -6,6 +6,7 @@ USER root
 RUN apt-get update && apt-get install -y \
     curl \
     ca-certificates \
+    gettext \
     && rm -rf /var/lib/apt/lists/*
 
 # Install kubectl

@@ -8,6 +8,9 @@ rules:
 - apiGroups: [""]
   resources: ["secrets", "pods", "pods/log"]
   verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+- apiGroups: ["apps"]
+  resources: ["deployments"]
+  verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
 
 ---
 
