@@ -1,33 +1,35 @@
 #!/bin/bash
 
+# Environment Variables
 CLUSTER_NAME="kind"
+IMAGE_NAME="jenkins-kubectl-agent"  
 
-# Function to check for an existing Docker image in the local registry
+# Check for an existing Docker image in the local registry
 check_image_exists() {
-  if [[ $(docker images -q jenkins-kubectl-agent 2> /dev/null) == "" ]]; then
-    echo "Docker image 'jenkins-kubectl-agent' does not exist."
+  if [[ $(docker images -q $IMAGE_NAME 2> /dev/null) == "" ]]; then
+    echo "Docker image '$IMAGE_NAME' does not exist."
     return 1
   else
-    echo "Docker image 'jenkins-kubectl-agent' exists."
+    echo "Docker image '$IMAGE_NAME' exists."
     return 0
   fi
 }
 
-# Function to build the Docker image
+# Build the Docker image
 build_image() {
-  echo "Building Docker image 'jenkins-kubectl-agent'..."
-  docker build -t jenkins-kubectl-agent .
+  echo "Building Docker image '$IMAGE_NAME'..."
+  docker build -t $IMAGE_NAME .
   echo "Build complete."
 }
 
-# Function to load the Docker image into KinD
+# Load the Docker image into KinD
 load_image_into_kind() {
-  echo "Loading 'jenkins-kubectl-agent' into KinD..."
-  kind load docker-image jenkins-kubectl-agent --name $CLUSTER_NAME
+  echo "Loading '$IMAGE_NAME' into KinD..."
+  kind load docker-image $IMAGE_NAME --name $CLUSTER_NAME
   echo "Image loaded into KinD."
 }
 
-# Check if the image exists and decide on the next steps
+# Check if the image exists
 if ! check_image_exists; then
   build_image
   load_image_into_kind
@@ -44,7 +46,7 @@ else
   fi
 fi
 
-# Optionally, list loaded images to verify
+# List loaded images to verify
+echo "----------------------------------------------------------------------------------------------------------------------"
 docker exec -it ${CLUSTER_NAME}-control-plane crictl images
-
 echo "----------------------------------------------------------------------------------------------------------------------"
