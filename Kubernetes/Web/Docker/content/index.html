@@ -6,9 +6,9 @@
     <title>Welcome</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
             margin: 40px;
-            color: #333333;
+            color: #333;
             background-color: #f4f4f4;
             text-align: center;
         }
@@ -17,21 +17,43 @@
         }
         p {
             font-size: 18px;
+            margin: 10px 0 30px;
+        }
+        button {
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        #counter {
+            font-size: 22px;
+            color: #888;
         }
     </style>
 </head>
 <body>
     <h1>ASDASD</h1>
-    <p>asdasdasd</p>
-    <button onclick="logAction()">Click to Log</button>
+    <p>Click the button to increase the counter.</p>
+
+    <div id="counter">Count: 0</div>
+    <button onclick="logAction()">Increase Counter</button>
 
     <script>
     let count = 0;
 
     function logAction() {
         count++;
+        document.getElementById('counter').textContent = 'Count: ' + count; // Update count display
         var xmlHttp = new XMLHttpRequest();
-        // Endpoint and log message update including the count
         xmlHttp.open("GET", '/log?action=button_clicked&count=' + count, true);
         xmlHttp.send();
     }
