@@ -1,6 +1,6 @@
 # Test Project
 
-This repository features a setup for Grafana, Loki, Promtail, an NGINX static website, and an NGINX Proxy Manager. This setup is bundled using Docker Compose for ease of deployment.
+This repository features a setup for Grafana, Loki, Promtail, an NGINX static website, and an NGINX Proxy Manager with Docker Compose, and another similar stack for Kubernetes, extended with Jenkins.
 
 ## Directory Structure
 
@@ -19,7 +19,11 @@ This repository features a setup for Grafana, Loki, Promtail, an NGINX static we
   - **`Loki/`**: Kubernetes manifests for deploying Loki, configured to align with cluster logging needs.
   - **`Promtail/`**: Kubernetes constructs like deployments and ConfigMaps, tailored to gather logs from cluster nodes and pods and feed them into Loki.
     - **Note**: There is a test script to push a hello label to Promtail; it should be visible in Grafana if you add a query.
-  - **`Web/`**: Static site deployment configurations to deploy and manage the NGINX static website inside the Kubernetes cluster.
+  - **`Web/`**: Tooling and configurations for deploying and managing the NGINX static website inside the Kubernetes cluster.
+    - **`Docker/`**:
+      - **`content/`**: Contains `index.html` and other static files for the web.
+      - **`Dockerfile`**: Dockerfile to build the NGINX server with the static content.
+      - **`build.sh`**: Script to build the Docker image with the nginx configuration and write the version to a version.txt file, which is then used by Jenkins to identify the correct image.
   - **`Jenkins/`**:
     - **`agent/`**:
       - **`Dockerfile`**: Dockerfile for building the custom Jenkins agent with Kubernetes tools installed.
