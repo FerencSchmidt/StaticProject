@@ -46,7 +46,7 @@ kubectl create secret generic $SECRET_TEXT_NAME \
   --namespace $NAMESPACE \
   --dry-run=client -o yaml | kubectl apply -f -
 
-# Adding annotations and labels specifically for Jenkins
+# Adding annotations and labels specifically for Jenkins - These annotations are required because of the Kubernetes Jenkins Secret Plugin to recognize them.
 kubectl annotate secret $SECRET_TEXT_NAME jenkins.io/credentials-type=secretText -n $NAMESPACE --overwrite
 kubectl label secret $SECRET_TEXT_NAME jenkins.io/credentials-type=secretText -n $NAMESPACE --overwrite
 
