@@ -65,5 +65,5 @@ This repository features a setup for Grafana, Loki, Promtail, an NGINX static we
 - **NGINX Proxy Manager**: Manages proxy settings for web applications including SSL configuration and redirect rules.
 - **Jenkins**: Orchestrates continuous integration and deployment pipelines within Kubernetes, managing the automation of building, testing, and deploying applications.
 
-[!IMPORTANT] 
-Please run the scripts from the actual directory where they reside in to ensure the relative paths are working correctly.
+> [!IMPORTANT]
+> Please run the scripts from the actual directory where they reside in to ensure the relative paths are working correctly.
