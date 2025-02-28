@@ -2,6 +2,15 @@
 
 This repository features a setup for Grafana, Loki, Promtail, an NGINX static website, and an NGINX Proxy Manager with Docker Compose, and another similar stack specially designed for Kubernetes, extended with Jenkins for automation.
 
+## Prerequisites
+
+- **KinD (Kubernetes in Docker):** version 0.26.0
+  - [Kind Quick Start](https://kind.sigs.k8s.io/docs/user/quick-start/)
+  
+- **Windows Subsystem for Linux (WSL):** Ubuntu-22.04 (Default)
+
+- **Docker Desktop:** WSL 2 based engine, Docker Engine v20.10.8
+
 ## Directory Structure
 
 - **`Compose/`**:
