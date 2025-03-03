@@ -23,6 +23,7 @@ This repository features a setup for Grafana, Loki, Promtail, an NGINX static we
 
 - **`Kubernetes/`**:
   - **`Kind/`**: Scripts and resources for setting up and managing local Kubernetes environments using Kind; includes setup for an NGINX proxy to route requests into the Kind cluster.
+      - **Note**: https://kind.sigs.k8s.io/docs/user/ingress
   - **`Grafana/`**: Kubernetes deployments for Grafana, including service and ingress configuration.
     - **`Dashboards/`**: Contains dashboard definitions in JSON format to be used within Grafana.
   - **`Loki/`**: Kubernetes manifests for deploying Loki, configured to align with cluster logging needs.
