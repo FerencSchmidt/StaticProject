@@ -1,0 +1,100 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<flow-definition plugin="workflow-job@2.40">
+  <actions>
+    <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobAction plugin="pipeline-model-definition@1.8.4"/>
+    <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction plugin="pipeline-model-definition@1.8.4">
+      <jobProperties/>
+      <triggers/>
+      <parameters/>
+      <options/>
+    </org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction>
+  </actions>
+  <description></description>
+  <keepDependencies>false</keepDependencies>
+  <properties/>
+  <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@2.93">
+    <script><![CDATA[
+pipeline {
+    agent {
+        kubernetes {
+            label 'kubeagent'
+        }
+    }
+    environment {
+        DEPLOYMENT_TEMPLATE_PATH = 'Kubernetes/Web/web-deployment.yaml'
+        MODIFIED_DEPLOYMENT_PATH = 'Kubernetes/Web/modified_web-deployment.yaml'
+        VERSION_FILE = 'Kubernetes/Web/Docker/version.txt'
+    }
+    stages {
+        stage('Checkout') {
+            steps {
+                checkout([
+                    $class: 'GitSCM',
+                    branches: [[name: '*/web']],
+                    doGenerateSubmoduleConfigurations: false,
+                    extensions: [],
+                    submoduleCfg: [],
+                    userRemoteConfigs: [[
+                        url: 'git@github.com:FerencSchmidt/StaticProject.git',
+                        credentialsId: 'ssh'
+                    ]]
+                ])
+            }
+        }
+        stage('Agent Info') {
+            steps {
+                script {
+                    echo "======================== START SECTION: AGENT INFO ========================"
+                    echo "Build node: ${env.NODE_NAME}"
+                    echo "Labels: ${env.NODE_LABELS}"
+
+                    if (sh(script: "command -v kubectl", returnStatus: true) == 0) {
+                        echo "kubectl is already installed."
+                        sh "kubectl version --client"
+                    } else {
+                        echo "kubectl is not installed."
+                    }
+                    echo "======================== END SECTION: AGENT INFO ========================"
+                }
+            }
+        }
+        stage('Build') {
+            steps {
+                script {
+                    echo "======================== START SECTION: BUILD ========================"
+                    sh "pwd"
+                    sh "ls -lah"
+                    sh "kubectl get pods -n jenkins"
+
+                    if (fileExists(env.VERSION_FILE)) {
+                        def versionTag = readFile(env.VERSION_FILE).trim()
+                        echo "Version read from file: $versionTag"
+                        
+                        sh """
+                           export VERSION_TAG=${versionTag}
+                           envsubst &lt; ${env.DEPLOYMENT_TEMPLATE_PATH} &gt; ${env.MODIFIED_DEPLOYMENT_PATH}
+                        """
+                        
+                        echo "Deployment file has been updated with new tag: $versionTag"
+                        sh "cat ${env.MODIFIED_DEPLOYMENT_PATH}"
+                        sh "kubectl apply -f ${env.MODIFIED_DEPLOYMENT_PATH}"
+                    } else {
+                        error "version.txt file not found. Failing the build."
+                    }
+                    echo "======================== END SECTION: BUILD ========================"
+                }
+            }
+        }
+    }
+    post {
+        always {
+            echo "Build completed."
+        }
+    }
+}
+]]></script>
+    <sandbox>true</sandbox>
+  </definition>
+  <triggers/>
+  <disabled>false</disabled>
+</flow-definition>

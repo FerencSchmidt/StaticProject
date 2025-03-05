@@ -27,6 +27,7 @@ spec:
             kubernetes-credentials-provider:1.273.v15e69b_55ea_8e \
             git:5.7.0 \
             configuration-as-code:1932.v75cb_b_f1b_698d \
+            pipeline-model-definition:2.2236.va_b_88ceec798f \
             ssh-slaves:3.1031.v72c6b_883b_869
         volumeMounts:
           - name: plugin-volume
