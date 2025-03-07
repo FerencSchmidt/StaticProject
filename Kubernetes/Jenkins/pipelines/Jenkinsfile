@@ -1,7 +1,7 @@
 pipeline {
     agent {
         kubernetes {
-            label 'kubeagent'
+            inheritFrom 'kubeagent'
         }
     }
     environment {
@@ -19,8 +19,7 @@ pipeline {
                     extensions: [],
                     submoduleCfg: [],
                     userRemoteConfigs: [[
-                        url: 'git@github.com:FerencSchmidt/StaticProject.git',
-                        credentialsId: 'ssh'
+                        url: 'git@github.com:FerencSchmidt/StaticProject.git'
                     ]]
                 ])
             }
