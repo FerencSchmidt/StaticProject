@@ -9,6 +9,9 @@ pipeline {
         MODIFIED_DEPLOYMENT_PATH = 'Kubernetes/Web/modified_web-deployment.yaml'
         VERSION_FILE = 'Kubernetes/Web/Docker/version.txt'
     }
+    triggers {
+        pollSCM('H/5 * * * *')
+    }
     stages {
         stage('Checkout') {
             steps {
