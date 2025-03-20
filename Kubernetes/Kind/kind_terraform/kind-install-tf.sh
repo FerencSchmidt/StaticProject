@@ -24,7 +24,7 @@ if [[ ! -d "$CONFIG_DIR" ]]; then
   exit 1
 fi
 
-# Print a section header to easily distinguish parts
+# Print a section header for readability
 function print_section() {
   echo -e "${GREEN}\n===================================\n${1}\n===================================${RESET}"
 }
@@ -43,11 +43,11 @@ read -p "Do you want to proceed with the 'terraform apply'? (yes/no) " CONFIRM
 if [[ "$CONFIRM" == "yes" ]]; then
   terraform apply tfplan
 
-  # Only export the KUBECONFIG after a successful Terraform apply
+  # Only need to export the KUBECONFIG after a successful Terraform apply
   if [[ $? -eq 0 ]]; then
     print_section "Setting KUBECONFIG"
-    export KUBECONFIG="$KUBECONFIG_FILE"
-    echo -e "${GREEN}KUBECONFIG has been set to $KUBECONFIG_FILE for accessing the cluster.${RESET}"
+    echo -e "${GREEN}To make KUBECONFIG available, run the following command:${RESET}"
+    echo "export KUBECONFIG=$KUBECONFIG_FILE"
   else
     echo -e "${RED}Terraform apply failed. Exiting.${RESET}"
     exit 3
