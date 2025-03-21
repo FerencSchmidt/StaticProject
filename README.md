@@ -34,6 +34,7 @@ This repository features a setup for Grafana, Loki, Promtail, an NGINX static we
       - **`content/`**: Contains `index.html` and other static files for the web.
       - **`Dockerfile`**: Dockerfile to build the NGINX server with the static content.
       - **`build.sh`**: Script to build the Docker image with the nginx configuration, perform the desired version bump, and write the build version to `version.txt`. This file will later be utilized by Jenkins for image deployment.
+          - **Note**: Please change the cluster name var to your actual cluster's name.
   - **`Jenkins/`**:
     - **`agent/`**:
       - **`Dockerfile`**: Dockerfile for building the custom Jenkins agent with Kubernetes tools installed.
@@ -46,6 +47,28 @@ This repository features a setup for Grafana, Loki, Promtail, an NGINX static we
         - **Scripts for generating SSH keys, secret tokens, and adding them as secrets to Kubernetes.
         - **YAML definitions for service account tokens.
     - **`jenkins-deployment.yaml`**: YAML files for deploying Jenkins to the Kubernetes cluster, including necessary roles and configurations.
+
+- **`Kubernetes/Kind/Kind_Terraform/`**:
+  - Terraform scripts and resources for automating the creation of a KinD Kubernetes cluster.
+  - Includes:
+    - **Main Configuration (`main.tf`)**: Sets the cluster name, node image version, port mappings (`80` and `443` for HTTP/HTTPS), and generates a kubeconfig.
+    - **Variables (`variables.tf`)**: Allows customization of variables such as cluster name, node version, and more.
+    - **Outputs (`outputs.tf`)**: Provides useful information on the generated cluster, such as kubeconfig paths or cluster details.
+    - **Apply Script (`kind-install-tf.sh`)**: A Bash script to initialize, plan, and apply Terraform configuration to create the KinD cluster and set up the kubeconfig.
+    - **Prerequisites**:
+      - Terraform must be installed and available in your environment. Additionally, KinD is required to run the Kubernetes cluster on a local machine.
+      - The Bash script uses the `~/config/` directory for temporary kubeconfig files but also supports copying credentials to `~/.kube/config` for easier `kubectl` usage.
+  - **Notes on Usage**:
+    - Run the `kind-install-tf.sh` script from the same directory to ensure that all relative paths are resolved correctly.
+    - The `outputs.tf` file provides details such as the expected kubeconfig location for ease of debugging.
+    - Logs for the created cluster are accessible through the Docker logs of the KinD control-plane container.
+
+---
+
+## KinD cluster creation
+
+1. Navigate to the `Kubernetes/Kind/kind_terraform` directory.
+2. Run the `kind-install-tf.sh` script. Please check the kubeconfig afterwards, you may have to export KUBECONFIG=~/.kube/config
 
 ## Build Steps for Web
 
