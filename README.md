@@ -57,7 +57,7 @@ This repository features a setup for Grafana, Loki, Promtail, an NGINX static we
     - **Apply Script (`kind-install-tf.sh`)**: A Bash script to initialize, plan, and apply Terraform configuration to create the KinD cluster and set up the kubeconfig.
     - **Prerequisites**:
       - Terraform must be installed and available in your environment. Additionally, KinD is required to run the Kubernetes cluster on a local machine.
-      - The Bash script uses the `~/config/` directory for temporary kubeconfig files but also supports copying credentials to `~/.kube/config` for easier `kubectl` usage.
+      - The Bash script uses the `~/config/` directory for temporary kubeconfig files but also supports copying credentials to `~/.kube/config`.
   - **Notes on Usage**:
     - Run the `kind-install-tf.sh` script from the same directory to ensure that all relative paths are resolved correctly.
     - The `outputs.tf` file provides details such as the expected kubeconfig location for ease of debugging.
@@ -91,6 +91,8 @@ This repository features a setup for Grafana, Loki, Promtail, an NGINX static we
 3. Apply the Kubernetes yaml files including the token in the secrets directory. 
 4. Run the `generate_kube_jenkins_sa_token_secret.sh`, which generates a plain text type of secret token that will be used to authenticate to the Kubernetes cluster from Jenkins, labels and adds the secret
 5. The master password should be visible in the jenkins pod logs.
+6. For the custom agent, please run the `build.sh` in `Jenkins/agent`. It will build the custom image and loads it into KinD
+    - **Note**: Mind the cluster name in the script file.
 > [!IMPORTANT]
 > In your git repo, add your key as a deploy key so Jenkins can access it.
 
