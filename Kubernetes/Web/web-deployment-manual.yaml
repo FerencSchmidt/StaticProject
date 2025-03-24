@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: webapp-deployment
+  namespace: web
+  labels:
+    app: webapp
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: webapp
+  template:
+    metadata:
+      labels:
+        app: webapp
+    spec:
+      containers:
+      - name: webapp
+        image: webapp:4.0.1
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8080
+        volumeMounts:
+        - name: webapp-config
+          mountPath: /etc/nginx/nginx.conf
+          subPath: nginx.conf
+        - name: webapp-logs
+          mountPath: /var/log/nginx
+      volumes:
+      - name: webapp-config
+        configMap:
+          name: webapp-config
+      - name: webapp-logs
+        emptyDir: {}

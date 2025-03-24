@@ -1,5 +1,5 @@
 #!/bin/bash
-CLUSTER_NAME="kind"
+CLUSTER_NAME="project-cluster"
 
 # Path to version file
 VERSION_FILE="version.txt"
