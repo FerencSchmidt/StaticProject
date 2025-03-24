@@ -69,6 +69,7 @@ This repository features a setup for Grafana, Loki, Promtail, an NGINX static we
 
 1. Navigate to the `Kubernetes/Kind/kind_terraform` directory.
 2. Run the `kind-install-tf.sh` script. Please check the kubeconfig afterwards, you may have to export KUBECONFIG=~/.kube/config
+3. Check the namespaces, it should create web, jenkins and monitoring.
 
 ## Build Steps for Web
 
@@ -86,10 +87,10 @@ This repository features a setup for Grafana, Loki, Promtail, an NGINX static we
 ## Steps for Jenkins Setup
 
 1. In the Jenkins `secrets` directory, run the `generate_ssh_keys.sh` script. This will create a `keys` directory then generate a known hosts file and public and private keys in that directory. It will add them as Kubernetes secrets to the Jenkins namespace as well.
-2. Run the `generate_kube_jenkins_sa_token_secret.sh`, which generates a plain text type of secret token that will be used to authenticate to the Kubernetes cluster from Jenkins, labels and adds the secret.
-3. Run the `create_configmap_for_jobs.sh` in the jobs directory to create the necessary configmaps for jenkins to mount.
-4. Apply the Kubernetes yaml files including the token in the secrets directory.
-5. The master password should be visible in the logs.
+2. Run the `create_configmap_for_jobs.sh` in the jobs directory to create the necessary configmaps for jenkins to mount.
+3. Apply the Kubernetes yaml files including the token in the secrets directory. 
+4. Run the `generate_kube_jenkins_sa_token_secret.sh`, which generates a plain text type of secret token that will be used to authenticate to the Kubernetes cluster from Jenkins, labels and adds the secret
+5. The master password should be visible in the jenkins pod logs.
 > [!IMPORTANT]
 > In your git repo, add your key as a deploy key so Jenkins can access it.
 
