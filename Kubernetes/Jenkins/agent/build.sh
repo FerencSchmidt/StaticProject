@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Environment Variables
-CLUSTER_NAME="kind"
+CLUSTER_NAME="project-cluster"
 IMAGE_NAME="jenkins-kubectl-agent"  
 
 # Check for an existing Docker image in the local registry
