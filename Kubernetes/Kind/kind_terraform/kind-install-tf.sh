@@ -13,9 +13,18 @@ CONFIG_DIR="./config"
 KUBECONFIG_FILE="$CONFIG_DIR/config"
 DEFAULT_KUBECONFIG="$HOME/.kube/config"  # Expand ~ explicitly to $HOME
 
+# Namespace list
+NAMESPACES=("web" "monitoring" "jenkins")
+
 # Check if Terraform is installed
 if ! command -v terraform &> /dev/null; then
   echo -e "${RED}Error: Terraform not installed. Please install Terraform before proceeding.${RESET}"
+  exit 1
+fi
+
+# Check if kubectl is installed
+if ! command -v kubectl &> /dev/null; then
+  echo -e "${RED}Error: kubectl not installed. Please install kubectl before proceeding.${RESET}"
   exit 1
 fi
 
@@ -81,6 +90,17 @@ if [[ "$CONFIRM" == "yes" ]]; then
       echo -e "${RED}Error: Kubeconfig file not found at $KUBECONFIG_FILE.${RESET}"
       exit 4
     fi
+
+    # Create specified namespaces
+    print_section "Creating Kubernetes namespaces"
+    for NAMESPACE in "${NAMESPACES[@]}"; do
+      if kubectl get namespace "$NAMESPACE" &> /dev/null; then
+        echo -e "${GREEN}Namespace '$NAMESPACE' already exists. Skipping creation.${RESET}"
+      else
+        kubectl create namespace "$NAMESPACE"
+        echo -e "${GREEN}Namespace '$NAMESPACE' created successfully.${RESET}"
+      fi
+    done
 
   else
     echo -e "${RED}Terraform apply failed. Exiting.${RESET}"
