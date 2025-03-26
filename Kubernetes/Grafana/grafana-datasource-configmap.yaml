@@ -7,12 +7,21 @@ data:
   ds.yaml: |
     apiVersion: 1
     datasources:
+    - name: Prometheus
+      type: prometheus
+      access: proxy
+      orgId: 1
+      url: http://prometheus.monitoring.svc.cluster.local:9090/prometheus
+      basicAuth: false
+      isDefault: true
+      version: 1
+      editable: false
     - name: Loki
       type: loki
       access: proxy
       orgId: 1
-      url: http://loki:3100
+      url: http://loki.monitoring.svc.cluster.local:3100
       basicAuth: false
-      isDefault: true
+      isDefault: false
       version: 1
       editable: false
