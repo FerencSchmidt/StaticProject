@@ -14,22 +14,42 @@ data:
     scrape_configs:
       # Scrape Prometheus itself
       - job_name: prometheus
+        metrics_path: /prometheus/metrics  # Adjusted for the route prefix
         static_configs:
-          - targets: ['localhost:9090']
+          - targets: ['localhost:9090']  # Internal Prometheus instance runs locally
 
-      # Scrape Node Exporter
+      # Scrape Node Exporter (basic CPU, memory, disk metrics)
       - job_name: node-exporter
+        metrics_path: /metrics
         static_configs:
-          - targets: ['node-exporter.monitoring.svc.cluster.local:9100']
+          - targets: ['node-exporter.monitoring.svc.cluster.local:9100']  # Matches node-exporter pod
 
-      # Example: Add more targets here
-      # Loki
+      # Scrape Loki (logs metrics)
       - job_name: loki
+        metrics_path: /metrics
         static_configs:
-          - targets: ['loki.monitoring.svc.cluster.local:3100']
+          - targets: ['loki.monitoring.svc.cluster.local:3100']  # Matches loki pod in "monitoring"
 
-      # Jenkins (via Prometheus plugin)
+      # Scrape Jenkins (via Prometheus plugin)
       - job_name: jenkins
-        metrics_path: /prometheus
+        metrics_path: /jenkins/prometheus  # Jenkins Prometheus plugin exposes metrics under '/prometheus' but we have the jenkins prefix also
         static_configs:
-          - targets: ['jenkins.monitoring.svc.cluster.local:8080']
+          - targets: ['jenkins.jenkins.svc.cluster.local:8080']  # Matches jenkins pod in "jenkins" namespace
+
+      # Scrape kube-state-metrics (Kubernetes object state metrics)
+      - job_name: kube-state-metrics
+        metrics_path: /metrics
+        static_configs:
+          - targets: ['kube-state-metrics.monitoring.svc.cluster.local:8080']  # Matches kube-state-metrics pod in "monitoring"
+
+      # Scrape Ingress-NGINX Controller Metrics
+      - job_name: ingress-nginx
+        metrics_path: /metrics
+        static_configs:
+          - targets: ['ingress-nginx-controller.ingress-nginx.svc.cluster.local:10254']  # NGINX metrics exposed here
+
+      # Scrape NGINX Static Website (webapp-deployment pod)
+      - job_name: nginx-static-web
+        metrics_path: /metrics
+        static_configs:
+          - targets: ['webapp-deployment.web.svc.cluster.local:80']  # Matches webapp in "web" namespace

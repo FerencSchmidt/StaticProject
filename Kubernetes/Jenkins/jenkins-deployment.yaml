@@ -29,7 +29,8 @@ spec:
             configuration-as-code:1932.v75cb_b_f1b_698d \
             pipeline-model-definition:2.2236.va_b_88ceec798f \
             ssh-slaves:3.1031.v72c6b_883b_869 \
-            github:1.42.0
+            github:1.42.0 \
+            prometheus:819.v50953a_c560dd
         volumeMounts:
           - name: plugin-volume
             mountPath: /usr/share/jenkins/ref/plugins
