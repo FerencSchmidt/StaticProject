@@ -35,6 +35,13 @@ This repository features a setup for Grafana, Loki, Promtail, an NGINX static we
       - **`Dockerfile`**: Dockerfile to build the NGINX server with the static content.
       - **`build.sh`**: Script to build the Docker image with the nginx configuration, perform the desired version bump, and write the build version to `version.txt`. This file will later be utilized by Jenkins for image deployment.
           - **Note**: Please change the cluster name var to your actual cluster's name.
+  - **`Prometheus/`**: Kubernetes deployments and config for Prometheus, pre-configured to scrape endpoints for monitoring.
+    - **Note**:
+      - Ensure the correct namespace (`monitoring`) is created before applying the manifests.
+  - **`Metrics/`**: YAML files for deploying kube-state-metrics to export Kubernetes cluster state as metrics for Prometheus.
+    - **Note**:
+      - Ensure the correct namespace (`monitoring`) is created before applying the manifests.
+      - Prometheus will scrape the exposed `/metrics` endpoint to monitor Kubernetes objects like Deployments, Services, and Nodes.
   - **`Jenkins/`**:
     - **`agent/`**:
       - **`Dockerfile`**: Dockerfile for building the custom Jenkins agent with Kubernetes tools installed.
@@ -77,6 +84,8 @@ This repository features a setup for Grafana, Loki, Promtail, an NGINX static we
 2. Make your desired modifications to the static content or Docker configurations as needed.
 3. Run the `build.sh` script to build the Docker image, choosing the type of version bump you want for the change. The script also loads the built image into Kind and records the version in `version.txt` for Jenkins to use.
 4. Commit your changes and push them to the branch named "web".
+> [!IMPORTANT]
+> There are an nginx.conf file in the Docker dir which is copied to the container, and there is a configmap in the root directory with the same content. In your Kubernetes environment, the configmap will overwrite the original config that is within the container.
 
 ## Deploy Steps for Web in Jenkins
 
@@ -104,6 +113,9 @@ This repository features a setup for Grafana, Loki, Promtail, an NGINX static we
 - **NGINX Static Website**: Efficiently serves static content, handling web traffic and page rendering.
 - **NGINX Proxy Manager**: Manages proxy settings for web applications including SSL configuration and redirect rules.
 - **Jenkins**: Orchestrates continuous integration and deployment pipelines within Kubernetes, managing the automation of building, testing, and deploying applications.
+- **Prometheus**: Collects metrics from various sources and provides a queryable data store for monitoring applications and infrastructure.
+- **kube-state-metrics**: Exports Kubernetes metadata and state information as metrics for Prometheus.
+
 
 > [!IMPORTANT]
 > Please run the scripts from the actual directory where they reside in to ensure the relative paths are working correctly.
