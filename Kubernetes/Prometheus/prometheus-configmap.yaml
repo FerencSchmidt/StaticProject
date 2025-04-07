@@ -52,4 +52,4 @@ data:
       - job_name: nginx-static-web
         metrics_path: /metrics
         static_configs:
-          - targets: ['webapp-deployment.web.svc.cluster.local:80']  # Matches webapp in "web" namespace
+          - targets: ['webapp-service.web.svc.cluster.local:8080']  # Matches webapp in "web" namespace
