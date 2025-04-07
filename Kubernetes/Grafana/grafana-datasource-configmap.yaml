@@ -13,7 +13,7 @@ data:
       orgId: 1
       url: http://prometheus.monitoring.svc.cluster.local:9090/prometheus
       basicAuth: false
-      isDefault: true
+      isDefault: false
       version: 1
       editable: false
     - name: Loki
