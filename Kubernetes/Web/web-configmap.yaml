@@ -41,6 +41,10 @@ data:
                 index index.html index.htm;
             }
 
+            location /metrics {
+                stub_status;
+            }
+
             location /log {
                 internal;
                 # Redirect the interaction log to stdout using the log_interaction format
