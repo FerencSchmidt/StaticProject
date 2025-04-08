@@ -34,7 +34,7 @@ data:
       - job_name: jenkins
         metrics_path: /jenkins/prometheus  # Jenkins Prometheus plugin exposes metrics under '/prometheus' but we have the jenkins prefix also
         static_configs:
-          - targets: ['jenkins.jenkins.svc.cluster.local:8080']  # Matches jenkins pod in "jenkins" namespace
+          - targets: ['jenkins-service.jenkins.svc.cluster.local:8080']  # Matches jenkins pod in "jenkins" namespace
 
       # Scrape kube-state-metrics (Kubernetes object state metrics)
       - job_name: kube-state-metrics
@@ -42,14 +42,8 @@ data:
         static_configs:
           - targets: ['kube-state-metrics.monitoring.svc.cluster.local:8080']  # Matches kube-state-metrics pod in "monitoring"
 
-      # Scrape Ingress-NGINX Controller Metrics
-      - job_name: ingress-nginx
-        metrics_path: /metrics
-        static_configs:
-          - targets: ['ingress-nginx-controller.ingress-nginx.svc.cluster.local:10254']  # NGINX metrics exposed here
-
       # Scrape NGINX Static Website (webapp-deployment pod)
-      - job_name: nginx-static-web
+      - job_name: nginx-exporter
         metrics_path: /metrics
         static_configs:
-          - targets: ['webapp-service.web.svc.cluster.local:8080']  # Matches webapp in "web" namespace
+          - targets: ['nginx-prometheus-exporter.web.svc.cluster.local:9113']
