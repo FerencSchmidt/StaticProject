@@ -4,6 +4,14 @@ metadata:
   name: grafana-dashboard-provider
   namespace: monitoring
 data:
-  default.yaml: "apiVersion: 1\n\nproviders:\n  - name: Default    # A uniquely identifiable
-    name for the provider\n    folder: Services # The folder where to place the dashboards\n
-    \   type: file\n    options:\n      path:  /var/lib/grafana/dashboards\n      \n"
+  dashboards.yml: |
+    apiVersion: 1
+    providers:
+      - name: dashboards
+        orgId: 1
+        folder: ""
+        type: file
+        disableDeletion: false
+        editable: true
+        options:
+          path: /var/lib/grafana/dashboards

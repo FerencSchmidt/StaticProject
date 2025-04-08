@@ -51,8 +51,12 @@ spec:
           readOnly: true
         - name: grafana-dashboard-provider
           mountPath: /etc/grafana/provisioning/dashboards/
-        - name: grafana-dashboard-volume
-          mountPath: /var/lib/grafana/dashboards/
+        - name: grafana-click-count-dashboard
+          mountPath: /var/lib/grafana/dashboards/click-count/
+        - name: grafana-jenkins-dashboard
+          mountPath: /var/lib/grafana/dashboards/jenkins/
+        - name: grafana-kube-metrics-dashboard
+          mountPath: /var/lib/grafana/dashboards/kube/
       volumes:
       - name: grafana-datasource-volume
         configMap:
@@ -60,7 +64,13 @@ spec:
       - name: grafana-dashboard-provider
         configMap:
           name: grafana-dashboard-provider
-      - name: grafana-dashboard-volume
+      - name: grafana-click-count-dashboard
         configMap:
           name: grafana-click-count-dashboard
+      - name: grafana-jenkins-dashboard
+        configMap:
+          name: grafana-jenkins-dashboard
+      - name: grafana-kube-metrics-dashboard
+        configMap:
+          name: grafana-kube-metrics-dashboard
       restartPolicy: Always
