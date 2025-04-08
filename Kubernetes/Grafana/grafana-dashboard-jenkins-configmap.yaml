@@ -1,0 +1,48 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-click-count-dashboard
+  namespace: monitoring
+data:
+  jenkins-dashboard.json: |
+    {
+      "panels": [
+        {
+          "gridPos": { "h": 9, "w": 23, "x": 0, "y": 0 },
+          "targets": [
+            {
+              "expr": "default_jenkins_executors_busy",
+              "refId": "A"
+            }
+          ],
+          "title": "Executors",
+          "type": "gauge"
+        },
+        {
+          "gridPos": { "h": 8, "w": 12, "x": 0, "y": 9 },
+          "targets": [
+            {
+              "expr": "default_jenkins_builds_success_build_count_total",
+              "refId": "A"
+            }
+          ],
+          "title": "Successful Builds",
+          "type": "stat"
+        },
+        {
+          "gridPos": { "h": 8, "w": 11, "x": 12, "y": 9 },
+          "targets": [
+            {
+              "expr": "default_jenkins_builds_failed_build_count_total",
+              "refId": "A"
+            }
+          ],
+          "title": "Failed Builds",
+          "type": "stat"
+        }
+      ],
+      "title": "Jenkins",
+      "timezone": "browser",
+      "schemaVersion": 30,
+      "refresh": "5s"
+    }
